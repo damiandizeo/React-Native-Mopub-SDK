@@ -1,48 +1,62 @@
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
 buildscript {
-    repositories {
-        jcenter()
-        google()
-        maven { url "https://s3.amazonaws.com/moat-sdk-builds" }
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://dl.bintray.com/ironsource-mobile/android-sdk' }
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:4.0.1")
+    if (project == rootProject) {
+        repositories {
+            google()
+            jcenter()
+        }
+        dependencies {
+            classpath 'com.android.tools.build:gradle:3.6.3'
+        }
     }
 }
 
-allprojects {
-    repositories {
-        mavenLocal()
-        maven {
-            url("$rootDir/../node_modules/react-native/android")
-        }
-        jcenter()
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion safeExtGet('compileSdkVersion', 28)
+    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
+    defaultConfig {
+        minSdkVersion safeExtGet('minSdkVersion', 16)
+        targetSdkVersion safeExtGet('targetSdkVersion', 28)
     }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$rootDir/../node_modules/react-native/android"
+    }
+    google()
+    jcenter()
 }
 
 dependencies {
-
-    implementation 'com.facebook.react:react-native:+'
+    implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation('com.mopub:mopub-sdk:5.14.0@aar') {
         transitive = true
     }
 
     //  Vungle
-    implementation 'com.vungle:publisher-sdk-android:6.8.1'
-    implementation 'com.mopub.mediation:vungle:6.8.1.0'
+//    implementation 'com.vungle:publisher-sdk-android:6.8.1'
+//    implementation 'com.mopub.mediation:vungle:6.8.1.0'
 
     // Google (AdMob)
-    implementation 'com.google.android.gms:play-services-ads:19.5.0'
-    implementation 'com.mopub.mediation:admob:19.5.0.2'
+    // implementation 'com.google.android.gms:play-services-ads:19.5.0'
+    // implementation 'com.mopub.mediation:admob:19.5.0.2'
 
     // Facebook
     implementation 'com.facebook.android:audience-network-sdk:6.2.0'
     implementation 'com.mopub.mediation:facebookaudiencenetwork:6.2.0.1'
 
     // IronSource
-    implementation 'com.ironsource.sdk:mediationsdk:7.0.2'
-    implementation 'com.mopub.mediation:ironsource:7.0.2.0'
-
+    // implementation 'com.ironsource.sdk:mediationsdk:7.0.2'
+    // implementation 'com.mopub.mediation:ironsource:7.0.2.0'
 }
-
