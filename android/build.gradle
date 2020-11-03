@@ -1,16 +1,11 @@
 buildscript {
     repositories {
         jcenter()
- maven { url "https://s3.amazonaws.com/moat-sdk-builds" }
-        maven { url 'https://adcolony.bintray.com/AdColony' }
-        maven { url 'https://tapjoy.bintray.com/maven' }
         maven { url 'https://jitpack.io' }
-
+        maven { url 'https://dl.bintray.com/ironsource-mobile/android-sdk'}
     }
 
     dependencies {
-        // Matches the RN Hello World template
-        // https://github.com/facebook/react-native/blob/1e8f3b11027fe0a7514b4fc97d0798d3c64bc895/local-cli/templates/HelloWorld/android/build.gradle#L8
         classpath 'com.android.tools.build:gradle:2.2.3'
     }
 }
@@ -53,30 +48,27 @@ repositories {
 }
 
 dependencies {
+
     compile 'com.facebook.react:react-native:+'
-implementation('com.mopub:mopub-sdk:5.6.0@aar') {
+    implementation('com.mopub:mopub-sdk:5.6.0@aar') {
         transitive = true
     }
 
-//    // AdColony
-    implementation 'com.adcolony:sdk:3.3.8'
-    implementation 'com.mopub.mediation:adcolony:3.3.8.1'
+    //  Vungle
+    implementation 'com.vungle:publisher-sdk-android:6.8.1'
+    implementation 'com.mopub.mediation:vungle:6.8.1.0'
 
-// Google (AdMob)
-//    implementation 'com.google.android.gms:play-services-ads:17.1.2'
-//    implementation 'com.mopub.mediation:admob:17.1.2.4'
+    // Google (AdMob)
+    implementation 'com.google.android.gms:play-services-ads:19.5.0'
+    implementation 'com.mopub.mediation:admob:19.5.0.2'
 
-//// Tapjoy
-    implementation 'com.tapjoy:tapjoy-android-sdk:12.2.0@aar'
-    implementation 'com.mopub.mediation:tapjoy:12.2.0.3'
+    // Facebook
+    implementation 'com.facebook.android:audience-network-sdk:6.2.0'
+    implementation 'com.mopub.mediation:facebookaudiencenetwork:6.2.0.1'
 
-// AppLovin
-    implementation 'com.applovin:applovin-sdk:9.4.0'
-    implementation 'com.mopub.mediation:applovin:9.4.0.0'
-
-// Vungle
-    implementation 'com.github.vungle:vungle-android-sdk:6.3.24'
-    implementation 'com.mopub.mediation:vungle:6.3.24.2'
+    // IronSource
+    implementation 'com.ironsource.sdk:mediationsdk:7.0.2'
+    implementation 'com.mopub.mediation:ironsource:7.0.2.0'
 
 }
 

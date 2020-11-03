@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
     s.description  = <<-DESC
     react-native-mopub-sdk
     DESC
-    s.homepage     = "https://github.com/aliasad106/React-Native-Mopub-SDK"
+    s.homepage     = "https://github.com/damiandizeo/React-Native-Mopub-SDK"
     s.license      = "MIT"
     # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
     s.author       = { "author" => "author@domain.cn" }
@@ -28,38 +28,28 @@ Pod::Spec.new do |s|
         s.static_framework = true
     end
     
-    s.subspec "AdColony" do |ss|
-        
-        ss.dependency 'MoPub-AdColony-Adapters', '~> 3.3.7.0'
+    s.subspec "Vungle" do |ss|
+        ss.dependency 'MoPub-Vungle-Adapters', '~> 6.8.1.0'
         
     end
-    
 
     s.subspec "AdMob" do |ss|
         
-        ss.dependency 'MoPub-AdMob-Adapters', '~> 7.39.0.0'
+        ss.dependency 'MoPub-AdMob-Adapters', '~> 7.66.0.1'
         
     end
-    
-    
-    s.subspec "Tapjoy" do |ss|
+
+    s.subspec "FacebookAudienceNetwork" do |ss|
         
-        ss.dependency 'MoPub-TapJoy-Adapters', '~> 12.2.0.4'
-        
-    end
-    
-    s.subspec "AppLovin" do |ss|
-        
-        ss.dependency 'MoPub-Applovin-Adapters', '~> 6.2.0.1'
+        ss.dependency 'MoPub-FacebookAudienceNetwork-Adapters', '~> 6.2.0.0'
         
     end
-    
-    s.subspec "Vungle" do |ss|
+
+    s.subspec "IronSource" do |ss|
         
-        ss.dependency 'MoPub-Vungle-Adapters', '~> 6.3.2.5'
+        ss.dependency 'MoPub-IronSource-Adapters', '~> 7.0.2.0.0'
         
     end
-    
-    #s.dependency "others"
+
 end
 
