@@ -17,11 +17,14 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', 28)
-    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
+    compileSdkVersion safeExtGet('compileSdkVersion', 27)
+    buildToolsVersion safeExtGet('buildToolsVersion', "27.0.3")
+
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', 16)
-        targetSdkVersion safeExtGet('targetSdkVersion', 28)
+        targetSdkVersion safeExtGet('targetSdkVersion', 27)
+        versionCode 1
+        versionName "1.0"
     }
     lintOptions {
         abortOnError false
@@ -29,17 +32,14 @@ android {
 }
 
 repositories {
-    mavenLocal()
     maven {
-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        url "$rootDir/../node_modules/react-native/android"
+        url "$projectDir/../node_modules/react-native/android"
     }
-    google()
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:+"
     implementation('com.mopub:mopub-sdk:5.14.0@aar') {
         transitive = true
     }
@@ -53,8 +53,8 @@ dependencies {
     // implementation 'com.mopub.mediation:admob:19.5.0.2'
 
     // Facebook
-    implementation 'com.facebook.android:audience-network-sdk:6.2.0'
-    implementation 'com.mopub.mediation:facebookaudiencenetwork:6.2.0.1'
+    // implementation 'com.facebook.android:audience-network-sdk:6.2.0'
+    // implementation 'com.mopub.mediation:facebookaudiencenetwork:6.2.0.1'
 
     // IronSource
     // implementation 'com.ironsource.sdk:mediationsdk:7.0.2'
