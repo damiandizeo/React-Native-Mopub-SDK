@@ -6,6 +6,7 @@
 //
 
 #import "AdLibSDK.h"
+#import <mopub-ios-sdk/MoPub.h>
 
 @implementation AdLibSDK
 
