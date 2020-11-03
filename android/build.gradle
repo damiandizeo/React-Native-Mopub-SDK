@@ -2,6 +2,9 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven { url "https://s3.amazonaws.com/moat-sdk-builds" }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://dl.bintray.com/ironsource-mobile/android-sdk' }
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.0.1")
@@ -10,17 +13,11 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         mavenLocal()
         maven {
             url("$rootDir/../node_modules/react-native/android")
         }
-        maven { 
-            url 'https://jitpack.io'
-        }
-        maven { 
-            url 'https://dl.bintray.com/ironsource-mobile/android-sdk'
-        }
+        jcenter()
     }
 }
 
