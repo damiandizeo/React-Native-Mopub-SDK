@@ -45,14 +45,15 @@ RCT_EXPORT_METHOD(presentRewardedVideoAdForAdUnitID:(NSString *) unitId currency
 {
     
     if ([MPRewardedVideo hasAdAvailableForAdUnitID:unitId]) {
-        NSPredicate *rewardPredicate = [NSPredicate predicateWithFormat:@"(SELF.currencyType == %@ AND SELF.amount == %@)", currencyType, amount];
         
-        MPRewardedVideoReward *selectedReward = [[MPRewardedVideo availableRewardsForAdUnitID:unitId] filteredArrayUsingPredicate:rewardPredicate].firstObject;
-        
+        MPRewardedVideoReward *selectedReward = [MPRewardedVideo availableRewardsForAdUnitID:unitId].firstObject;
         if (selectedReward) {
-             UIViewController *vc = [UIApplication sharedApplication].delegate.window.rootViewController;
-             [MPRewardedVideo presentRewardedVideoAdForAdUnitID:unitId fromViewController:vc withReward:selectedReward];
-             callback(@[@{@"message":@"video showing!"}]);
+            UIViewController *vc = UIApplication.sharedApplication.delegate.window.rootViewController;
+            while(vc.presentedViewController) {
+                vc = vc.presentedViewController;
+            }
+            [MPRewardedVideo presentRewardedVideoAdForAdUnitID:unitId fromViewController:vc withReward:selectedReward];
+            callback(@[@{@"message":@"video showing!"}]);
         } else {
             callback(@[@{@"message":@"reward not found! for these ingredients!"}]);
         }
