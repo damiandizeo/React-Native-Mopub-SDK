@@ -56,7 +56,7 @@ Pod::Spec.new do |s|
     
     s.subspec "Vungle" do |ss|
         
-        ss.dependency 'MoPub-Vungle-Adapters', '~> 6.3.2.5'
+        ss.dependency 'MoPub-Vungle-Adapters', '~> 6.8.1.0'
         
     end
     
