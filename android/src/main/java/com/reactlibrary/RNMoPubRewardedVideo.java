@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -21,9 +20,10 @@ import com.mopub.common.privacy.PersonalInfoManager;
 import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubRewardedVideoListener;
 import com.mopub.mobileads.MoPubRewardedVideos;
+import com.mopub.mobileads.IronSourceAdapterConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements MoPubRewardedVideoListener {
@@ -57,12 +57,13 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(adUnitID).build();
+                Map<String, String> ironSourceSettings = new HashMap<>();
+                ironSourceSettings.put("​applicationKey​", "dd309231");
+                SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(adUnitID).withMediatedNetworkConfiguration(IronSourceAdapterConfiguration.class.getName(), ironSourceSettings).build();
                 MoPub.initializeSdk(context, sdkConfiguration, initSdkListener(adUnitID, listener));
             }
         };
         mainHandler.post(myRunnable);
-
     }
 
     private SdkInitializationListener initSdkListener(final String adUnitID, final MoPubRewardedVideoListener listener) {

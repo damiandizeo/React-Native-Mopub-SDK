@@ -26,8 +26,15 @@ RCT_EXPORT_MODULE();
 }
 
 RCT_EXPORT_METHOD(initialize: (nonnull NSString*) adUnitId) {
+    NSDictionary * ironSourceConfig = @{@"applicationKey": @"dd3058a9"};
+    
     MPMoPubConfiguration *sdkConfig = [[MPMoPubConfiguration alloc] initWithAdUnitIdForAppInitialization:adUnitId];
     sdkConfig.globalMediationSettings = @[];
+    
+    NSMutableDictionary * config = [@{@"IronSourceAdapterConfiguration" : ironSourceConfig} mutableCopy];
+
+    sdkConfig.mediatedNetworkConfigurations = config;
+    
     [[MoPub sharedInstance] initializeSdkWithConfiguration:sdkConfig completion:^{
         [MPRewardedVideo setDelegate:self forAdUnitId:adUnitId];
         NSDictionary* body = @{
