@@ -6,29 +6,23 @@
 //
 
 #import "RNMoPubRewardedVideo.h"
-#import <AdColonyGlobalMediationSettings.h>
-#import <MPGoogleGlobalMediationSettings.h>
-#import <TapjoyGlobalMediationSettings.h>
-#import <VungleInstanceMediationSettings.h>
 #import "MPRewardedVideo.h"
-#import "AdLibSDK.h"
 @implementation RNMoPubRewardedVideo
 
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[
-        @"rewardedVideoAdDidLoadForAdUnitID",
-        @"rewardedVideoAdDidFailToLoadForAdUnitID",
-        @"rewardedVideoAdDidFailToPlayForAdUnitID",
-        @"rewardedVideoAdWillAppearForAdUnitID",
-        @"rewardedVideoAdDidAppearForAdUnitID",
-        @"rewardedVideoAdWillDisappearForAdUnitID",
-        @"rewardedVideoAdDidDisappearForAdUnitID",
-        @"rewardedVideoAdShouldRewardForAdUnitID",
-        @"rewardedVideoAdDidExpireForAdUnitID",
-        @"rewardedVideoAdDidReceiveTapEventForAdUnitID",
-        @"rewardedVideoAdWillLeaveApplicationForAdUnitID"
+        @"onRewardedVideoInitSuccess",
+        @"onRewardedVideoLoadSuccess",
+        @"onRewardedVideoLoadFailure",
+        @"onRewardedVideoStarted",
+        @"onRewardedVideoPlaybackError",
+        @"onRewardedVideoShouldReward",
+        @"onRewardedVideoClicked",
+        @"onRewardedVideoDidExpire",
+        @"onRewardedVideoAppear",
+        @"onRewardedVideoDisappear"
     ];
 }
 
@@ -47,17 +41,17 @@ RCT_EXPORT_METHOD(initialize: (nonnull NSString*) adUnitId) {
     }];
 }
 
-RCT_EXPORT_METHOD(loadRewardedVideo:(NSString *)unitId) {
-    [MPRewardedVideo loadRewardedVideoAdWithAdUnitID:adUnitId withMediationSettings:nil];
+RCT_EXPORT_METHOD(loadRewardedVideo:(NSString *)adUnitID) {
+    [MPRewardedVideo loadRewardedVideoAdWithAdUnitID:adUnitID withMediationSettings:nil];
 }
 
-RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)unitId callback:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)adUnitID) {
     UIViewController *vc = UIApplication.sharedApplication.delegate.window.rootViewController;
     while (vc.presentedViewController) {
         vc = vc.presentedViewController;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [MPRewardedVideo presentRewardedVideoAdForAdUnitID:adUnitId fromViewController:vc withReward:nil];
+        [MPRewardedVideo presentRewardedVideoAdForAdUnitID:adUnitID fromViewController:vc withReward:nil];
     });
 }
 
@@ -74,7 +68,7 @@ RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)unitId callback:(RCTResponseS
 }
 
 - (void)rewardedVideoAdShouldRewardForAdUnitID:(NSString *)adUnitID reward:(MPRewardedVideoReward *)reward {
-    [self sendEventWithName:@"onRewardedVideoShouldReward" body:nil];
+    [self sendEventWithName:@"onRewardedVideoShouldReward" body:@{@"adUnitID": adUnitID}];
 }
 
 - (void)rewardedVideoAdDidReceiveTapEventForAdUnitID:(NSString *)adUnitID {
@@ -83,6 +77,14 @@ RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)unitId callback:(RCTResponseS
 
 - (void)rewardedVideoAdDidExpireForAdUnitID:(NSString *)adUnitID {
     [self sendEventWithName:@"onRewardedVideoDidExpire" body:@{@"adUnitID": adUnitID}];
+}
+
+- (void)rewardedVideoAdWillAppearForAdUnitID:(NSString *)adUnitID {
+    [self sendEventWithName:@"onRewardedVideoAppear" body:@{@"adUnitID": adUnitID}];
+}
+
+-(void)rewardedVideoAdDidDisappearForAdUnitID:(NSString *)adUnitID {
+    [self sendEventWithName:@"onRewardedVideoDisappear" body:@{@"adUnitID": adUnitID}];
 }
 
 - (dispatch_queue_t)methodQueue {

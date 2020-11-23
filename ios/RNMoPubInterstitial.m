@@ -2,10 +2,6 @@
 #import "RNMoPubInterstitial.h"
 #import <React/RCTLog.h>
 #import "RNNativeAdView.h"
-#import <AdColonyGlobalMediationSettings.h>
-#import <MPGoogleGlobalMediationSettings.h>
-#import <TapjoyGlobalMediationSettings.h>
-#import <VungleInstanceMediationSettings.h>
 #import "MPNativeAdConstants.h"
 #import "AdLibSDK.h"
 

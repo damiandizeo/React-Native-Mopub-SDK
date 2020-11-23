@@ -110,12 +110,16 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
 
     @Override
     public void onRewardedVideoLoadSuccess(String adUnitId) {
-        sendEvent(ON_REWARDED_VIDEO_LOAD_SUCCESS, adUnitId);
+        WritableMap event = Arguments.createMap();
+        event.putString("adUnitId", adUnitId);
+        sendEvent(ON_REWARDED_VIDEO_LOAD_SUCCESS, event);
     }
 
     @Override
     public void onRewardedVideoLoadFailure(String adUnitId, MoPubErrorCode errorCode) {
-        sendEvent(ON_REWARDED_VIDEO_LOAD_FAILURE, adUnitId);
+        WritableMap event = Arguments.createMap();
+        event.putString("adUnitId", adUnitId);
+        sendEvent(ON_REWARDED_VIDEO_LOAD_FAILURE, event);
     }
 
     @Override
