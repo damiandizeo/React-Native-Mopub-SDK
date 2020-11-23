@@ -26,18 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by usamaazam on 30/03/2019.
- */
-
 public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements MoPubRewardedVideoListener {
 
-    private static final String EVENT_INIT = "onInit";
-    private static final String EVENT_LOADED = "onLoaded";
-    private static final String EVENT_FAILED = "onFailed";
-    private static final String EVENT_DISAPEARED = "onDidDisappear";
-    private static final String EVENT_EXPIRED = "onDidExpire";
-    private static final String EVENT_SHOULD_REWARD = "onShouldReward";
+    public static final String ON_REWARDED_VIDEO_INIT_SUCCESS = "onRewardedVideoInitSuccess";
+    public static final String ON_REWARDED_VIDEO_LOAD_SUCCESS = "onRewardedVideoLoadSuccess";
+    public static final String ON_REWARDED_VIDEO_LOAD_FAILURE = "onRewardedVideoLoadFailure";
+    public static final String ON_REWARDED_VIDEO_STARTED = "onRewardedVideoStarted";
+    public static final String ON_REWARDED_VIDEO_PLAYBACK_ERROR = "onRewardedVideoPlaybackError";
+    public static final String ON_REWARDED_VIDEO_SHOULD_REWARD = "onRewardedVideoShouldReward";
+    public static final String ON_REWARDED_VIDEO_COMPLETED = "onRewardedVideoCompleted";
+    public static final String ON_REWARDED_VIDEO_CLICKED = "onRewardedVideoClicked";
 
     private final ReactApplicationContext reactContext;
 
@@ -51,23 +49,16 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
         return "RNMoPubRewardedVideo";
     }
 
-
     @ReactMethod
     public void initialize(final String adUnitID) {
-
         final Context context = this.getCurrentActivity();
         final MoPubRewardedVideoListener listener = this;
-
         Handler mainHandler = new Handler(context.getMainLooper());
-
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-
                 SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(adUnitID).build();
                 MoPub.initializeSdk(context, sdkConfiguration, initSdkListener(adUnitID, listener));
-
-
             }
         };
         mainHandler.post(myRunnable);
@@ -83,16 +74,14 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
                 PersonalInfoManager mPersonalInfoManager = MoPub.getPersonalInformationManager();
                 event.putBoolean("canCollectPersonalInformation", mPersonalInfoManager.canCollectPersonalInformation());
                 if (mPersonalInfoManager.gdprApplies() == null) {
-                    event.putBoolean("gdprApplies", false); // This happens if the SDK is not properly initialized. We don't want it to crash the app though.
+                    event.putBoolean("gdprApplies", false);
                 } else {
                     event.putBoolean("gdprApplies", mPersonalInfoManager.gdprApplies());
                 }
                 event.putBoolean("shouldShowConsent", mPersonalInfoManager.shouldShowConsentDialog());
                 event.putString("adUnitId", adUnitID);
-                sendEvent(EVENT_INIT, event);
+                sendEvent(ON_REWARDED_VIDEO_INIT_SUCCESS, event);
                 MoPubRewardedVideos.setRewardedVideoListener(listener);
-
-
             }
         };
     }
@@ -109,12 +98,7 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void addTestDevice(final String testDeviceID) {
-
-    }
-
-    @ReactMethod
-    public void userClickedToWatchAd(final String adUnitID) {
+    public void presentRewardedVideo(final String adUnitID) {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -124,54 +108,53 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
 
     }
 
+    @Override
+    public void onRewardedVideoLoadSuccess(String adUnitId) {
+        sendEvent(ON_REWARDED_VIDEO_LOAD_SUCCESS, adUnitId);
+    }
+
+    @Override
+    public void onRewardedVideoLoadFailure(String adUnitId, MoPubErrorCode errorCode) {
+        sendEvent(ON_REWARDED_VIDEO_LOAD_FAILURE, adUnitId);
+    }
+
+    @Override
+    public void onRewardedVideoStarted(String adUnitId) {
+        WritableMap event = Arguments.createMap();
+        event.putString("adUnitId", adUnitId);
+        sendEvent(ON_REWARDED_VIDEO_STARTED, event);
+    }
+
+    @Override
+    public void onRewardedVideoPlaybackError(String adUnitId, MoPubErrorCode errorCode) {
+        WritableMap event = Arguments.createMap();
+        event.putString("adUnitId", adUnitId);
+        sendEvent(ON_REWARDED_VIDEO_PLAYBACK_ERROR, event);
+    }
+
+    @Override
+    public void onRewardedVideoClosed(String adUnitId) {
+        WritableMap event = Arguments.createMap();
+        event.putString("adUnitId", adUnitId);
+        sendEvent(ON_REWARDED_VIDEO_SHOULD_REWARD, event);
+    }
+
+    @Override
+    public void onRewardedVideoCompleted(Set<String> adUnitIds, MoPubReward reward) {
+        WritableMap event = Arguments.createMap();
+        event.putString("adUnitId", String.valueOf(adUnitIds.toArray()[0]));
+        sendEvent(ON_REWARDED_VIDEO_COMPLETED, event);
+    }
+
+    @Override
+    public void onRewardedVideoClicked(@NonNull String adUnitId) {
+        WritableMap event = Arguments.createMap();
+        event.putString("adUnitId", adUnitId);
+        sendEvent(ON_REWARDED_VIDEO_CLICKED, event);
+    }
 
     private void sendEvent(final String eventName, @Nullable WritableMap params) {
         getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
 
-    @Override
-    public void onRewardedVideoLoadSuccess(@NonNull String adUnitId) {
-        WritableMap event = Arguments.createMap();
-        event.putString("adUnitId", adUnitId);
-        sendEvent(EVENT_LOADED, event);
-    }
-
-    @Override
-    public void onRewardedVideoLoadFailure(@NonNull String adUnitId, @NonNull MoPubErrorCode errorCode) {
-        WritableMap event = Arguments.createMap();
-        event.putString("adUnitId", adUnitId);
-        sendEvent(EVENT_FAILED, event);
-    }
-
-    @Override
-    public void onRewardedVideoStarted(@NonNull String adUnitId) {
-
-    }
-
-    @Override
-    public void onRewardedVideoPlaybackError(@NonNull String adUnitId, @NonNull MoPubErrorCode errorCode) {
-
-    }
-
-    @Override
-    public void onRewardedVideoClicked(@NonNull String adUnitId) {
-
-    }
-
-    @Override
-    public void onRewardedVideoClosed(@NonNull String adUnitId) {
-        WritableMap event = Arguments.createMap();
-        event.putString("adUnitId", adUnitId);
-        sendEvent(EVENT_DISAPEARED, event);
-
-    }
-
-    @Override
-    public void onRewardedVideoCompleted(@NonNull Set<String> adUnitIds, @NonNull MoPubReward reward) {
-        WritableMap event = Arguments.createMap();
-        event.putString("adUnitId", String.valueOf(adUnitIds.toArray()[0]));
-        sendEvent(EVENT_SHOULD_REWARD, event);
-    }
-
-    
 }
