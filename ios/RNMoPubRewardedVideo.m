@@ -16,12 +16,11 @@ RCT_EXPORT_MODULE();
         @"onRewardedVideoInitSuccess",
         @"onRewardedVideoLoadSuccess",
         @"onRewardedVideoLoadFailure",
-        @"onRewardedVideoStarted",
+        @"onRewardedVideoDidExpire",
+        @"onRewardedVideoAppear",
         @"onRewardedVideoPlaybackError",
         @"onRewardedVideoShouldReward",
         @"onRewardedVideoClicked",
-        @"onRewardedVideoDidExpire",
-        @"onRewardedVideoAppear",
         @"onRewardedVideoDisappear"
     ];
 }
@@ -63,24 +62,24 @@ RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)adUnitID) {
     [self sendEventWithName:@"onRewardedVideoLoadFailure" body:@{@"adUnitID": adUnitID, @"error":error}];
 }
 
+- (void)rewardedVideoAdDidExpireForAdUnitID:(NSString *)adUnitID {
+    [self sendEventWithName:@"onRewardedVideoDidExpire" body:@{@"adUnitID": adUnitID}];
+}
+
 - (void)rewardedVideoAdDidFailToPlayForAdUnitID:(NSString *)adUnitID error:(NSError *)error {
     [self sendEventWithName:@"onRewardedVideoPlaybackError" body:@{@"adUnitID": adUnitID}];
 }
 
-- (void)rewardedVideoAdShouldRewardForAdUnitID:(NSString *)adUnitID reward:(MPRewardedVideoReward *)reward {
-    [self sendEventWithName:@"onRewardedVideoShouldReward" body:@{@"adUnitID": adUnitID}];
+- (void)rewardedVideoAdWillAppearForAdUnitID:(NSString *)adUnitID {
+    [self sendEventWithName:@"onRewardedVideoAppear" body:@{@"adUnitID": adUnitID}];
 }
 
 - (void)rewardedVideoAdDidReceiveTapEventForAdUnitID:(NSString *)adUnitID {
     [self sendEventWithName:@"onRewardedVideoClicked" body:@{@"adUnitID": adUnitID}];
 }
 
-- (void)rewardedVideoAdDidExpireForAdUnitID:(NSString *)adUnitID {
-    [self sendEventWithName:@"onRewardedVideoDidExpire" body:@{@"adUnitID": adUnitID}];
-}
-
-- (void)rewardedVideoAdWillAppearForAdUnitID:(NSString *)adUnitID {
-    [self sendEventWithName:@"onRewardedVideoAppear" body:@{@"adUnitID": adUnitID}];
+- (void)rewardedVideoAdShouldRewardForAdUnitID:(NSString *)adUnitID reward:(MPRewardedVideoReward *)reward {
+    [self sendEventWithName:@"onRewardedVideoShouldReward" body:@{@"adUnitID": adUnitID}];
 }
 
 -(void)rewardedVideoAdDidDisappearForAdUnitID:(NSString *)adUnitID {

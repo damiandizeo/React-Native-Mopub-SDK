@@ -31,11 +31,11 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
     public static final String ON_REWARDED_VIDEO_INIT_SUCCESS = "onRewardedVideoInitSuccess";
     public static final String ON_REWARDED_VIDEO_LOAD_SUCCESS = "onRewardedVideoLoadSuccess";
     public static final String ON_REWARDED_VIDEO_LOAD_FAILURE = "onRewardedVideoLoadFailure";
-    public static final String ON_REWARDED_VIDEO_STARTED = "onRewardedVideoStarted";
+    public static final String ON_REWARDED_VIDEO_APPEAR = "onRewardedVideoAppear";
     public static final String ON_REWARDED_VIDEO_PLAYBACK_ERROR = "onRewardedVideoPlaybackError";
     public static final String ON_REWARDED_VIDEO_SHOULD_REWARD = "onRewardedVideoShouldReward";
-    public static final String ON_REWARDED_VIDEO_COMPLETED = "onRewardedVideoCompleted";
     public static final String ON_REWARDED_VIDEO_CLICKED = "onRewardedVideoClicked";
+    public static final String ON_REWARDED_VIDEO_DISAPPEAR = "onRewardedVideoDisappear";
 
     private final ReactApplicationContext reactContext;
 
@@ -126,7 +126,7 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
     public void onRewardedVideoStarted(String adUnitId) {
         WritableMap event = Arguments.createMap();
         event.putString("adUnitId", adUnitId);
-        sendEvent(ON_REWARDED_VIDEO_STARTED, event);
+        sendEvent(ON_REWARDED_VIDEO_APPEAR, event);
     }
 
     @Override
@@ -137,24 +137,24 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
     }
 
     @Override
-    public void onRewardedVideoClosed(String adUnitId) {
+    public void onRewardedVideoClicked(@NonNull String adUnitId) {
         WritableMap event = Arguments.createMap();
         event.putString("adUnitId", adUnitId);
-        sendEvent(ON_REWARDED_VIDEO_SHOULD_REWARD, event);
+        sendEvent(ON_REWARDED_VIDEO_CLICKED, event);
     }
 
     @Override
     public void onRewardedVideoCompleted(Set<String> adUnitIds, MoPubReward reward) {
         WritableMap event = Arguments.createMap();
         event.putString("adUnitId", String.valueOf(adUnitIds.toArray()[0]));
-        sendEvent(ON_REWARDED_VIDEO_COMPLETED, event);
+        sendEvent(ON_REWARDED_VIDEO_SHOULD_REWARD, event);
     }
 
     @Override
-    public void onRewardedVideoClicked(@NonNull String adUnitId) {
+    public void onRewardedVideoClosed(String adUnitId) {
         WritableMap event = Arguments.createMap();
         event.putString("adUnitId", adUnitId);
-        sendEvent(ON_REWARDED_VIDEO_CLICKED, event);
+        sendEvent(ON_REWARDED_VIDEO_DISAPPEAR, event);
     }
 
     private void sendEvent(final String eventName, @Nullable WritableMap params) {
