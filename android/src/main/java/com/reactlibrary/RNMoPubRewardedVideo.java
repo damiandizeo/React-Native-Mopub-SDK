@@ -20,7 +20,6 @@ import com.mopub.common.privacy.PersonalInfoManager;
 import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubRewardedVideoListener;
 import com.mopub.mobileads.MoPubRewardedVideos;
-import com.mopub.mobileads.IronSourceAdapterConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,9 +56,7 @@ public class RNMoPubRewardedVideo extends ReactContextBaseJavaModule implements 
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                Map<String, String> ironSourceSettings = new HashMap<>();
-                ironSourceSettings.put("​applicationKey​", "dd309231");
-                SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(adUnitID).withMediatedNetworkConfiguration(IronSourceAdapterConfiguration.class.getName(), ironSourceSettings).build();
+                SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(adUnitID).build();
                 MoPub.initializeSdk(context, sdkConfiguration, initSdkListener(adUnitID, listener));
             }
         };
