@@ -1,99 +1,75 @@
 
 #import "RNMoPubInterstitial.h"
-#import <React/RCTLog.h>
-#import "RNNativeAdView.h"
-#import "MPNativeAdConstants.h"
-#import "AdLibSDK.h"
 
 @implementation RNMoPubInterstitial
 
 RCT_EXPORT_MODULE();
 
-
 - (NSArray<NSString *> *)supportedEvents {
     return @[
-             @"onLoaded",
-             @"onFailed",
-             @"onShown",
-             @"onDismissed",
-             @"onClicked"
-             ];
+        @"onInterstitialInitSuccess",
+        @"onInterstitialLoadSuccess",
+        @"onInterstitialLoadFailure",
+        @"onInterstitialLoadAppear",
+        @"onInterstitialLoadClicked",
+        @"onInterstitialLoadDisappear"
+    ];
 }
 
-
-- (dispatch_queue_t)methodQueue
-{
-    return dispatch_get_main_queue();
+RCT_EXPORT_METHOD(initialize: (nonnull NSString*)adUnitId) {
+    MPMoPubConfiguration *sdkConfig = [[MPMoPubConfiguration alloc] initWithAdUnitIdForAppInitialization:adUnitId];
+    sdkConfig.globalMediationSettings = @[];
+    [[MoPub sharedInstance] initializeSdkWithConfiguration:sdkConfig completion:^{
+        self.interstitial = [MPInterstitialAdController interstitialAdControllerForAdUnitId: adUnitId];
+        self.interstitial.delegate = self;
+        NSDictionary* body = @{
+            @"canCollectPersonalInformation":@([MoPub sharedInstance].shouldShowConsentDialog),
+            @"shouldShowConsentDialog":@([MoPub sharedInstance].shouldShowConsentDialog),
+            @"isGDPRApplicable":@([MoPub sharedInstance].isGDPRApplicable),
+            @"adUnitId": adUnitId
+        };
+        [self sendEventWithName:@"onInterstitialInitSuccess" body:body];
+    }];
 }
 
-
-
-RCT_EXPORT_METHOD(initializeInterstitialAd:(NSString *)unitId)
-{
-    
-    [AdLibSDK initializeAdSDK:unitId];
-    RCTLog(@"Mopub Initialized from Library!");
-    self.interstitial = [MPInterstitialAdController interstitialAdControllerForAdUnitId:unitId];
-    self.interstitial.delegate = self;
-    
-}
-
-RCT_REMAP_METHOD(isReady, resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    if (self.interstitial == nil){
-        resolve(false);
-    }
-    else {
-        resolve([NSNumber numberWithBool:[self.interstitial ready]]);
-    }
-}
-
-
-RCT_EXPORT_METHOD(setKeywords:(NSString *)keywords) {
-    [self.interstitial setKeywords:keywords];
-}
-
-RCT_EXPORT_METHOD(loadAd) {
-    
+RCT_EXPORT_METHOD(loadInterstitial:(NSString *)adUnitID) {
     [self.interstitial loadAd];
-    
 }
 
-RCT_EXPORT_METHOD(show) {
-    if (self.interstitial != nil) {
-        UIViewController *vc = [UIApplication sharedApplication].delegate.window.rootViewController;
-        [self.interstitial showFromViewController:vc];
+RCT_EXPORT_METHOD(presentInterstital:(NSString *)adUnitID) {
+    if( self.interstitial != nil && [self.interstitial ready] ) {
+        UIViewController *vc = UIApplication.sharedApplication.delegate.window.rootViewController;
+        while (vc.presentedViewController) {
+            vc = vc.presentedViewController;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.interstitial showFromViewController:vc];
+        });
     }
 }
 
-
-- (void)interstitialDidFailToLoadAd:(MPInterstitialAdController *)interstitial
-{
-    RCTLog(@"MoPub interstital failed to load");
-    [self sendEventWithName:@"onFailed" body:@{@"message": @"MoPub interstital failed to load"}];
-    
+- (void)interstitialDidFailToLoadAd:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialLoadFailure" body:@{@"message": @"MoPub interstital failed to load"}];
 }
 
 - (void)interstitialDidLoadAd:(MPInterstitialAdController *)interstitial {
-    RCTLog(@"onLoaded");
-    [self sendEventWithName:@"onLoaded" body:nil];
+    [self sendEventWithName:@"onInterstitialLoadSuccess" body:nil];
 }
 
+- (void)interstitialWillAppear:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialLoadAppear" body:nil];
+}
 
-- (void)interstitialDidAppear:(MPInterstitialAdController *)interstitial {
-    RCTLog(@"onShown");
-    [self sendEventWithName:@"onShown" body:nil];
-    
+- (void)interstitialDidReceiveTapEvent:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialLoadClicked" body:nil];
 }
 
 - (void)interstitialDidDisappear:(MPInterstitialAdController *)interstitial {
-    RCTLog(@"onDismissed");
-    [self sendEventWithName:@"onDismissed" body:nil];}
-
-- (void)interstitialDidReceiveTapEvent:(MPInterstitialAdController *)interstitial {
-    RCTLog(@"onClicked");
-    [self sendEventWithName:@"onClicked" body:nil];
+    [self sendEventWithName:@"onInterstitialLoadDisappear" body:nil];
 }
 
-
+- (dispatch_queue_t)methodQueue {
+    return dispatch_get_main_queue();
+}
 
 @end
