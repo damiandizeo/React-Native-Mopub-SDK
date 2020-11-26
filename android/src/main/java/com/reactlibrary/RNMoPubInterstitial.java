@@ -28,7 +28,7 @@ public class RNMoPubInterstitial extends ReactContextBaseJavaModule implements M
     public static final String ON_INTERSTITIAL_DISAPPEAR = "onInterstitialLoadDisappear";
 
     private final ReactApplicationContext reactContext;
-    private MoPubInterstitial interstitial;
+    private MoPubInterstitial mInterstitial;
 
     public RNMoPubInterstitial(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -43,7 +43,7 @@ public class RNMoPubInterstitial extends ReactContextBaseJavaModule implements M
     @ReactMethod
     public void initialize(final String adUnitID) {
         final Context context = this.getCurrentActivity();
-        interstitial = new MoPubInterstitial(getCurrentActivity(), adUnitID);
+        mInterstitial = new MoPubInterstitial(getCurrentActivity(), adUnitID);
         final MoPubInterstitial.InterstitialAdListener listener = this;
         Handler mainHandler = new Handler(context.getMainLooper());
         Runnable myRunnable = new Runnable() {
@@ -72,7 +72,7 @@ public class RNMoPubInterstitial extends ReactContextBaseJavaModule implements M
                 event.putBoolean("shouldShowConsent", mPersonalInfoManager.shouldShowConsentDialog());
                 event.putString("adUnitId", adUnitID);
                 sendEvent(ON_INTERSTITIAL_INIT_SUCCESS, event);
-                interstitial.setInterstitialAdListener(listener);
+                mInterstitial.setInterstitialAdListener(listener);
             }
         };
         return sdkInitializationListener;
@@ -84,8 +84,8 @@ public class RNMoPubInterstitial extends ReactContextBaseJavaModule implements M
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (interstitial != null) {
-                    interstitial.load();
+                if (mInterstitial != null) {
+                    mInterstitial.load();
                 }
             }
         });
@@ -96,8 +96,8 @@ public class RNMoPubInterstitial extends ReactContextBaseJavaModule implements M
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (interstitial != null) {
-                    interstitial.load();
+                if (mInterstitial != null && mInterstitial.isReady()) {
+                    mInterstitial.show();
                 }
             }
         });
@@ -105,8 +105,8 @@ public class RNMoPubInterstitial extends ReactContextBaseJavaModule implements M
 
     @ReactMethod
     public void forceRefreshInterstitial() {
-        if (interstitial != null) {
-            interstitial.forceRefresh();
+        if (mInterstitial != null) {
+            mInterstitial.forceRefresh();
         }
     }
 

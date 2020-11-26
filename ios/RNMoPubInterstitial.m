@@ -36,7 +36,7 @@ RCT_EXPORT_METHOD(loadInterstitial:(NSString *)adUnitID) {
     [self.interstitial loadAd];
 }
 
-RCT_EXPORT_METHOD(presentInterstital:(NSString *)adUnitID) {
+RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
     if( self.interstitial != nil && [self.interstitial ready] ) {
         UIViewController *vc = UIApplication.sharedApplication.delegate.window.rootViewController;
         while (vc.presentedViewController) {
