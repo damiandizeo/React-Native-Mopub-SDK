@@ -10,9 +10,9 @@ RCT_EXPORT_MODULE();
         @"onInterstitialInitSuccess",
         @"onInterstitialLoadSuccess",
         @"onInterstitialLoadFailure",
-        @"onInterstitialLoadAppear",
-        @"onInterstitialLoadClicked",
-        @"onInterstitialLoadDisappear"
+        @"onInterstitialAppear",
+        @"onInterstitialClicked",
+        @"onInterstitialDisappear"
     ];
 }
 
@@ -48,24 +48,24 @@ RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
     }
 }
 
-- (void)interstitialDidFailToLoadAd:(MPInterstitialAdController *)interstitial {
-    [self sendEventWithName:@"onInterstitialLoadFailure" body:@{@"message": @"MoPub interstital failed to load"}];
-}
-
 - (void)interstitialDidLoadAd:(MPInterstitialAdController *)interstitial {
     [self sendEventWithName:@"onInterstitialLoadSuccess" body:nil];
 }
 
+- (void)interstitialDidFailToLoadAd:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialLoadFailure" body:@{@"message": @"MoPub interstital failed to load"}];
+}
+
 - (void)interstitialWillAppear:(MPInterstitialAdController *)interstitial {
-    [self sendEventWithName:@"onInterstitialLoadAppear" body:nil];
+    [self sendEventWithName:@"onInterstitialAppear" body:nil];
 }
 
 - (void)interstitialDidReceiveTapEvent:(MPInterstitialAdController *)interstitial {
-    [self sendEventWithName:@"onInterstitialLoadClicked" body:nil];
+    [self sendEventWithName:@"onInterstitialClicked" body:nil];
 }
 
 - (void)interstitialDidDisappear:(MPInterstitialAdController *)interstitial {
-    [self sendEventWithName:@"onInterstitialLoadDisappear" body:nil];
+    [self sendEventWithName:@"onInterstitialDisappear" body:nil];
 }
 
 - (dispatch_queue_t)methodQueue {

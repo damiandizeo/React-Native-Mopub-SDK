@@ -23,9 +23,9 @@ public class RNMoPubInterstitial extends ReactContextBaseJavaModule implements M
     public static final String ON_INTERSTITIAL_INIT_SUCCESS = "onInterstitialInitSuccess";
     public static final String ON_INTERSTITIAL_LOAD_SUCCESS = "onInterstitialLoadSuccess";
     public static final String ON_INTERSTITIAL_LOAD_FAILURE = "onInterstitialLoadFailure";
-    public static final String ON_INTERSTITIAL_APPEAR = "onInterstitialLoadAppear";
-    public static final String ON_INTERSTITIAL_CLICKED = "onInterstitialLoadClicked";
-    public static final String ON_INTERSTITIAL_DISAPPEAR = "onInterstitialLoadDisappear";
+    public static final String ON_INTERSTITIAL_APPEAR = "onInterstitialAppear";
+    public static final String ON_INTERSTITIAL_CLICKED = "onInterstitialClicked";
+    public static final String ON_INTERSTITIAL_DISAPPEAR = "onInterstitialDisappear";
 
     private final ReactApplicationContext reactContext;
     private MoPubInterstitial mInterstitial;
