@@ -1,15 +1,12 @@
-import {NativeModules, NativeEventEmitter} from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 const { RNMoPubInterstitial } = NativeModules;
-
 
 const emitter = new NativeEventEmitter(RNMoPubInterstitial);
 
 module.exports = {
-    initializeInterstitialAd: (adUnitId: string) => RNMoPubInterstitial.initializeInterstitialAd(adUnitId),
-    loadAd: () => RNMoPubInterstitial.loadAd(),
-    setKeywords: (keywords: string) => RNMoPubInterstitial.setKeywords(keywords),
-    isReady: (): Promise => RNMoPubInterstitial.isReady(),
-    show: () => RNMoPubInterstitial.show(),
+    initialize: (adUnitId:string) => RNMoPubInterstitial.initialize(adUnitId),
+    loadInterstitial: (adUnitId: string) => RNMoPubInterstitial.loadInterstitial(adUnitId),
+    presentInterstitial: (adUnitId: string) => RNMoPubInterstitial.presentInterstitial(adUnitId),
     addEventListener: (eventType: string, listener: Function)  => emitter.addListener(eventType, listener),
     removeAllListeners: (eventType: string) => emitter.removeAllListeners(eventType)
 };

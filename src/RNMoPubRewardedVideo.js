@@ -1,6 +1,5 @@
-import {NativeModules, NativeEventEmitter} from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 const { RNMoPubRewardedVideo } = NativeModules;
-
 
 const emitter = new NativeEventEmitter(RNMoPubRewardedVideo);
 
