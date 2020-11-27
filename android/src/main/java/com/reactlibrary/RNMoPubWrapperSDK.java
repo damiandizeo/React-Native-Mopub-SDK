@@ -60,19 +60,20 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
     public void initialize(final String adUnitID) {
         final Context context = this.getCurrentActivity();
         mInterstitial = new MoPubInterstitial(getCurrentActivity(), adUnitID);
-        final MoPubRewardedVideoListener listener = this;
+        final MoPubRewardedVideoListener listenerRewardedVideo = this;
+        final MoPubInterstitial.InterstitialAdListener listenerInterstitial = this;
         Handler mainHandler = new Handler(context.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
                 SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(adUnitID).build();
-                MoPub.initializeSdk(context, sdkConfiguration, initSdkListener(adUnitID, listener));
+                MoPub.initializeSdk(context, sdkConfiguration, initSdkListener(adUnitID, listenerRewardedVideo, listenerInterstitial));
             }
         };
         mainHandler.post(myRunnable);
     }
 
-    private SdkInitializationListener initSdkListener(final String adUnitID, final MoPubRewardedVideoListener listener) {
+    private SdkInitializationListener initSdkListener(final String adUnitID, final MoPubRewardedVideoListener listenerRewardedVideo, final MoPubInterstitial.InterstitialAdListener listenerInterstitial) {
         return new SdkInitializationListener() {
             @Override
             public void onInitializationFinished() {
@@ -88,7 +89,8 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
                 event.putBoolean("shouldShowConsent", mPersonalInfoManager.shouldShowConsentDialog());
                 event.putString("adUnitId", adUnitID);
                 sendEvent(ON_SDK_INIT_SUCCESS, event);
-                MoPubRewardedVideos.setRewardedVideoListener(listener);
+                MoPubRewardedVideos.setRewardedVideoListener(listenerRewardedVideo);
+                mInterstitial.setInterstitialAdListener(listenerInterstitial);
             }
         };
     }
