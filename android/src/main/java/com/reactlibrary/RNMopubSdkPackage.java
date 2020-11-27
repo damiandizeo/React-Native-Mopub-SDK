@@ -16,8 +16,7 @@ public class RNMopubSdkPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
                 new RNMopubSdkModule(reactContext),
-                new RNMoPubInterstitial(reactContext),
-                new RNMoPubRewardedVideo(reactContext)
+                new RNMoPubWrapperSDK(reactContext)
         );
     }
 
