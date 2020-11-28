@@ -34,7 +34,7 @@ RCT_EXPORT_MODULE();
 }
 
 // Rewarded videos methods
-RCT_EXPORT_METHOD(initialize:(NSString *)interstitialAdUnitId andRewardedVideoAdUnitId:(NSString *)rewardedVideoAdUnitId) {
+RCT_EXPORT_METHOD(initialize:(NSString *)interstitialAdUnitId rewardedVideoAdUnitId:(NSString *)rewardedVideoAdUnitId) {
     MPMoPubConfiguration *sdkConfig = [[MPMoPubConfiguration alloc] initWithAdUnitIdForAppInitialization:interstitialAdUnitId];
     sdkConfig.globalMediationSettings = @[];
     [[MoPub sharedInstance] initializeSdkWithConfiguration:sdkConfig completion:^{
