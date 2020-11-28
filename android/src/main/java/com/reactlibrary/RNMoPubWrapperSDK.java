@@ -57,23 +57,23 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
     }
 
     @ReactMethod
-    public void initialize(final String adUnitID) {
+    public void initialize(final String interstitialAdUnitId, final String rewardedVideoAdUnitId) {
         final Context context = this.getCurrentActivity();
-        mInterstitial = new MoPubInterstitial(getCurrentActivity(), adUnitID);
+        mInterstitial = new MoPubInterstitial(getCurrentActivity(), interstitialAdUnitId);
         final MoPubRewardedVideoListener listenerRewardedVideo = this;
         final MoPubInterstitial.InterstitialAdListener listenerInterstitial = this;
         Handler mainHandler = new Handler(context.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(adUnitID).build();
-                MoPub.initializeSdk(context, sdkConfiguration, initSdkListener(adUnitID, listenerRewardedVideo, listenerInterstitial));
+                SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(interstitialAdUnitId).build();
+                MoPub.initializeSdk(context, sdkConfiguration, initSdkListener(interstitialAdUnitId, rewardedVideoAdUnitId, listenerRewardedVideo, listenerInterstitial));
             }
         };
         mainHandler.post(myRunnable);
     }
 
-    private SdkInitializationListener initSdkListener(final String adUnitID, final MoPubRewardedVideoListener listenerRewardedVideo, final MoPubInterstitial.InterstitialAdListener listenerInterstitial) {
+    private SdkInitializationListener initSdkListener(final String interstitialAdUnitId, final String rewardedVideoAdUnitId, final MoPubRewardedVideoListener listenerRewardedVideo, final MoPubInterstitial.InterstitialAdListener listenerInterstitial) {
         return new SdkInitializationListener() {
             @Override
             public void onInitializationFinished() {
@@ -87,7 +87,8 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
                     event.putBoolean("gdprApplies", mPersonalInfoManager.gdprApplies());
                 }
                 event.putBoolean("shouldShowConsent", mPersonalInfoManager.shouldShowConsentDialog());
-                event.putString("adUnitId", adUnitID);
+                event.putString("interstitialAdUnitId", interstitialAdUnitId);
+                event.putString("rewardedVideoAdUnitId", rewardedVideoAdUnitId);
                 sendEvent(ON_SDK_INIT_SUCCESS, event);
                 MoPubRewardedVideos.setRewardedVideoListener(listenerRewardedVideo);
                 mInterstitial.setInterstitialAdListener(listenerInterstitial);
@@ -97,21 +98,21 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
 
     // Rewarded videos methods
     @ReactMethod
-    public void loadRewardedVideo(final String adUnitID) {
+    public void loadRewardedVideo(final String rewardedVideoAdUnitId) {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                MoPubRewardedVideos.loadRewardedVideo(adUnitID);
+                MoPubRewardedVideos.loadRewardedVideo(rewardedVideoAdUnitId);
             }
         });
     }
 
     @ReactMethod
-    public void presentRewardedVideo(final String adUnitID) {
+    public void presentRewardedVideo(final String rewardedVideoAdUnitId) {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                MoPubRewardedVideos.showRewardedVideo(adUnitID);
+                MoPubRewardedVideos.showRewardedVideo(rewardedVideoAdUnitId);
             }
         });
 
@@ -119,7 +120,7 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
 
     // Interstitials methods
     @ReactMethod
-    public void loadInterstitial(final String adUnitID) {
+    public void loadInterstitial(final String interstitialAdUnitId) {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -131,7 +132,7 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
     }
 
     @ReactMethod
-    public void presentInterstitial(final String adUnitID) {
+    public void presentInterstitial(final String interstitialAdUnitId) {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {

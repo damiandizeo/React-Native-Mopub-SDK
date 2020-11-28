@@ -5,15 +5,16 @@
 //  Created by Usama Azam on 28/03/2019.
 //
 
-#import "RNMoPubRewardedVideo.h"
+#import "RNMoPubWrapperSDK.h"
 #import "MPRewardedVideo.h"
-@implementation RNMoPubRewardedVideo
+
+@implementation RNMoPubWrapperSDK
 
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[
-        @"onRewardedVideoInitSuccess",
+        @"onSDKInitSuccess",
         @"onRewardedVideoLoadSuccess",
         @"onRewardedVideoLoadFailure",
         @"onRewardedVideoDidExpire",
@@ -21,22 +22,33 @@ RCT_EXPORT_MODULE();
         @"onRewardedVideoPlaybackError",
         @"onRewardedVideoShouldReward",
         @"onRewardedVideoClicked",
-        @"onRewardedVideoDisappear"
+        @"onRewardedVideoDisappear",
+        
+        @"onInterstitialInitSuccess",
+        @"onInterstitialLoadSuccess",
+        @"onInterstitialLoadFailure",
+        @"onInterstitialAppear",
+        @"onInterstitialClicked",
+        @"onInterstitialDisappear"
     ];
 }
 
-RCT_EXPORT_METHOD(initialize: (nonnull NSString*) adUnitId) {
-    MPMoPubConfiguration *sdkConfig = [[MPMoPubConfiguration alloc] initWithAdUnitIdForAppInitialization:adUnitId];
+// Rewarded videos methods
+RCT_EXPORT_METHOD(initialize:(NSString *)interstitialAdUnitId rewardedVideoAdUnitId:(NSString *)rewardedVideoAdUnitId) {
+    MPMoPubConfiguration *sdkConfig = [[MPMoPubConfiguration alloc] initWithAdUnitIdForAppInitialization:interstitialAdUnitId];
     sdkConfig.globalMediationSettings = @[];
     [[MoPub sharedInstance] initializeSdkWithConfiguration:sdkConfig completion:^{
-        [MPRewardedVideo setDelegate:self forAdUnitId:adUnitId];
+        [MPRewardedVideo setDelegate:self forAdUnitId:rewardedVideoAdUnitId];
+        self.interstitial = [MPInterstitialAdController interstitialAdControllerForAdUnitId: interstitialAdUnitId];
+        self.interstitial.delegate = self;
         NSDictionary* body = @{
             @"canCollectPersonalInformation":@([MoPub sharedInstance].shouldShowConsentDialog),
             @"shouldShowConsentDialog":@([MoPub sharedInstance].shouldShowConsentDialog),
             @"isGDPRApplicable":@([MoPub sharedInstance].isGDPRApplicable),
-            @"adUnitId": adUnitId
+            @"interstitialAdUnitId": interstitialAdUnitId,
+            @"rewardedVideoAdUnitId": rewardedVideoAdUnitId
         };
-        [self sendEventWithName:@"onRewardedVideoInitSuccess" body:body];
+        [self sendEventWithName:@"onSDKInitSuccess" body:body];
     }];
 }
 
@@ -44,6 +56,7 @@ RCT_EXPORT_METHOD(loadRewardedVideo:(NSString *)adUnitID) {
     [MPRewardedVideo loadRewardedVideoAdWithAdUnitID:adUnitID withMediationSettings:nil];
 }
 
+// Interstitials methods
 RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)adUnitID) {
     UIViewController *vc = UIApplication.sharedApplication.delegate.window.rootViewController;
     while (vc.presentedViewController) {
@@ -54,6 +67,23 @@ RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)adUnitID) {
     });
 }
 
+RCT_EXPORT_METHOD(loadInterstitial:(NSString *)adUnitID) {
+    [self.interstitial loadAd];
+}
+
+RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
+    if( self.interstitial != nil && [self.interstitial ready] ) {
+        UIViewController *vc = UIApplication.sharedApplication.delegate.window.rootViewController;
+        while (vc.presentedViewController) {
+            vc = vc.presentedViewController;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.interstitial showFromViewController:vc];
+        });
+    }
+}
+
+// Rewarded videos delegates
 - (void)rewardedVideoAdDidLoadForAdUnitID:(NSString *)adUnitID {
     [self sendEventWithName:@"onRewardedVideoLoadSuccess" body:@{@"adUnitID": adUnitID}];
 }
@@ -84,6 +114,27 @@ RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)adUnitID) {
 
 -(void)rewardedVideoAdDidDisappearForAdUnitID:(NSString *)adUnitID {
     [self sendEventWithName:@"onRewardedVideoDisappear" body:@{@"adUnitID": adUnitID}];
+}
+
+// Interstitials delegates
+- (void)interstitialDidLoadAd:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialLoadSuccess" body:nil];
+}
+
+- (void)interstitialDidFailToLoadAd:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialLoadFailure" body:@{@"message": @"MoPub interstital failed to load"}];
+}
+
+- (void)interstitialWillAppear:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialAppear" body:nil];
+}
+
+- (void)interstitialDidReceiveTapEvent:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialClicked" body:nil];
+}
+
+- (void)interstitialDidDisappear:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialDisappear" body:nil];
 }
 
 - (dispatch_queue_t)methodQueue {

@@ -34,18 +34,19 @@ RCT_EXPORT_MODULE();
 }
 
 // Rewarded videos methods
-RCT_EXPORT_METHOD(initialize: (nonnull NSString*) adUnitId) {
-    MPMoPubConfiguration *sdkConfig = [[MPMoPubConfiguration alloc] initWithAdUnitIdForAppInitialization:adUnitId];
+RCT_EXPORT_METHOD(initialize:(NSString *)interstitialAdUnitId andRewardedVideoAdUnitId:(NSString *)rewardedVideoAdUnitId) {
+    MPMoPubConfiguration *sdkConfig = [[MPMoPubConfiguration alloc] initWithAdUnitIdForAppInitialization:interstitialAdUnitId];
     sdkConfig.globalMediationSettings = @[];
     [[MoPub sharedInstance] initializeSdkWithConfiguration:sdkConfig completion:^{
-        [MPRewardedVideo setDelegate:self forAdUnitId:adUnitId];
-        self.interstitial = [MPInterstitialAdController interstitialAdControllerForAdUnitId: adUnitId];
+        [MPRewardedVideo setDelegate:self forAdUnitId:rewardedVideoAdUnitId];
+        self.interstitial = [MPInterstitialAdController interstitialAdControllerForAdUnitId: interstitialAdUnitId];
         self.interstitial.delegate = self;
         NSDictionary* body = @{
             @"canCollectPersonalInformation":@([MoPub sharedInstance].shouldShowConsentDialog),
             @"shouldShowConsentDialog":@([MoPub sharedInstance].shouldShowConsentDialog),
             @"isGDPRApplicable":@([MoPub sharedInstance].isGDPRApplicable),
-            @"adUnitId": adUnitId
+            @"interstitialAdUnitId": interstitialAdUnitId,
+            @"rewardedVideoAdUnitId": rewardedVideoAdUnitId
         };
         [self sendEventWithName:@"onSDKInitSuccess" body:body];
     }];
