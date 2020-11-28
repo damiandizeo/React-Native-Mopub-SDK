@@ -39,6 +39,8 @@ RCT_EXPORT_METHOD(initialize: (nonnull NSString*) adUnitId) {
     sdkConfig.globalMediationSettings = @[];
     [[MoPub sharedInstance] initializeSdkWithConfiguration:sdkConfig completion:^{
         [MPRewardedVideo setDelegate:self forAdUnitId:adUnitId];
+        self.interstitial = [MPInterstitialAdController interstitialAdControllerForAdUnitId: adUnitId];
+        self.interstitial.delegate = self;
         NSDictionary* body = @{
             @"canCollectPersonalInformation":@([MoPub sharedInstance].shouldShowConsentDialog),
             @"shouldShowConsentDialog":@([MoPub sharedInstance].shouldShowConsentDialog),
