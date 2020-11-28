@@ -4,7 +4,7 @@ const { RNMoPubRewardedVideo } = NativeModules;
 const emitter = new NativeEventEmitter(RNMoPubRewardedVideo);
 
 module.exports = {
-    initialize: (interstitialAdUnitId: string, rewardedVideoAdUnitId: string) => RNMoPubRewardedVideo.initialize(interstitialAdUnitId, rewardedVideoAdUnitId),
+    initialize: (interstitialAdUnitId, rewardedVideoAdUnitId) => RNMoPubRewardedVideo.initialize(interstitialAdUnitId, rewardedVideoAdUnitId),
     loadRewardedVideo: (adUnitId: string) => RNMoPubRewardedVideo.loadRewardedVideo(adUnitId),
     presentRewardedVideo: (adUnitId: string) => RNMoPubRewardedVideo.presentRewardedVideo(adUnitId),
     addEventListener: (eventType: string, listener: Function)  => emitter.addListener(eventType, listener),
