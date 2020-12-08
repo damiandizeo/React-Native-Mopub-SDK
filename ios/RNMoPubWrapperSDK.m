@@ -22,7 +22,6 @@ RCT_EXPORT_MODULE();
         @"onRewardedVideoPlaybackError",
         @"onRewardedVideoShouldReward",
         @"onRewardedVideoClicked",
-        @"onRewardedVideoWillDisappear",
         @"onRewardedVideoDisappear",
         
         @"onInterstitialInitSuccess",
@@ -30,7 +29,6 @@ RCT_EXPORT_MODULE();
         @"onInterstitialLoadFailure",
         @"onInterstitialAppear",
         @"onInterstitialClicked",
-        @"onInterstitialWillDisappear",
         @"onInterstitialDisappear"
     ];
 }
@@ -80,7 +78,7 @@ RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
             vc = vc.presentedViewController;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.interstitial showFromViewController: vc];
+            [self.interstitial showFromViewController:vc];
         });
     }
 }
@@ -114,10 +112,6 @@ RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
     [self sendEventWithName:@"onRewardedVideoShouldReward" body:@{@"adUnitID": adUnitID}];
 }
 
-- (void)rewardedVideoAdWillDisappearForAdUnitID:(NSString *)adUnitID {
-    [self sendEventWithName:@"onRewardedVideoWillDisappear" body:@{@"adUnitID": adUnitID}];
-}
-
 -(void)rewardedVideoAdDidDisappearForAdUnitID:(NSString *)adUnitID {
     [self sendEventWithName:@"onRewardedVideoDisappear" body:@{@"adUnitID": adUnitID}];
 }
@@ -137,10 +131,6 @@ RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
 
 - (void)interstitialDidReceiveTapEvent:(MPInterstitialAdController *)interstitial {
     [self sendEventWithName:@"onInterstitialClicked" body:nil];
-}
-
--(void)interstitialWillDisappear:(MPInterstitialAdController *)interstitial {
-    [self sendEventWithName:@"onInterstitialWillDisappear" body:nil];
 }
 
 - (void)interstitialDidDisappear:(MPInterstitialAdController *)interstitial {
