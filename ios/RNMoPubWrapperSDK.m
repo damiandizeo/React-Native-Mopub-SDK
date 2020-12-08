@@ -30,6 +30,7 @@ RCT_EXPORT_MODULE();
         @"onInterstitialLoadFailure",
         @"onInterstitialAppear",
         @"onInterstitialClicked",
+        @"onInterstitialWillDisappear",
         @"onInterstitialDisappear"
     ];
 }
@@ -136,6 +137,10 @@ RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
 
 - (void)interstitialDidReceiveTapEvent:(MPInterstitialAdController *)interstitial {
     [self sendEventWithName:@"onInterstitialClicked" body:nil];
+}
+
+-(void)interstitialWillDisappear:(MPInterstitialAdController *)interstitial {
+    [self sendEventWithName:@"onInterstitialWillDisappear" body:nil];
 }
 
 - (void)interstitialDidDisappear:(MPInterstitialAdController *)interstitial {
