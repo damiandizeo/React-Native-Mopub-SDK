@@ -1,6 +1,6 @@
 {
   "_from": "react-native-mopub-sdk",
-  "_id": "react-native-mopub-sdk@1.0.0",
+  "_id": "react-native-mopub-sdk@1.0.1",
   "_inBundle": false,
   "_integrity": "sha512-ujJ9N6SBUbHYEl39RqwUseF2wVr9rwfpvuDCFTIceQTDr/UDkqN1K/XcVOj3WnoFqwISzAyg5vZ0w7zezGJR1Q==",
   "_location": "/react-native-mopub-sdk",
@@ -61,5 +61,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "title": "React Native Mopub Sdk",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

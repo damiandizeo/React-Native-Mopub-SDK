@@ -46,7 +46,8 @@ RCT_EXPORT_METHOD(initialize:(NSString *)interstitialAdUnitId rewardedVideoAdUni
             @"shouldShowConsentDialog":@([MoPub sharedInstance].shouldShowConsentDialog),
             @"isGDPRApplicable":@([MoPub sharedInstance].isGDPRApplicable),
             @"interstitialAdUnitId": interstitialAdUnitId,
-            @"rewardedVideoAdUnitId": rewardedVideoAdUnitId
+            @"rewardedVideoAdUnitId": rewardedVideoAdUnitId,
+            @"version": @"1.0.1"
         };
         [self sendEventWithName:@"onSDKInitSuccess" body:body];
     }];
