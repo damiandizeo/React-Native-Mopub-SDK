@@ -142,7 +142,8 @@ RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
 
 // Impression Tracked Delegate
 -(void)didTrackImpressionWithAdUnitID:(NSString *)adUnitID impressionData:(MPImpressionData *)impressionData {
-    NSMutableDictionary *dict = @{};
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    if( adUnitID == nil ) { return; }
     dict[@"adUnitID"] = adUnitID;
     if( impressionData.networkName != nil ) {
         dict[@"network"] = impressionData.networkName;
@@ -151,7 +152,8 @@ RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
 }
 
 - (void)mopubAd:(id<MPMoPubAd>)ad didTrackImpressionWithImpressionData:(MPImpressionData *)impressionData {
-    NSMutableDictionary *dict = @{};
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    if( impressionData.adUnitID == nil ) { return; }
     dict[@"adUnitID"] = impressionData.adUnitID;
     if( impressionData.networkName != nil ) {
         dict[@"network"] = impressionData.networkName;

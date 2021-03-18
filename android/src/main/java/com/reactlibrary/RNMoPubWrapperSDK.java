@@ -111,7 +111,7 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
                 WritableMap event = Arguments.createMap();
                 event.putString("adUnitID", adUnitId);
                 if( impressionData != null ) {
-                    event.putString("network", impressionData.getNetworkName();
+                    event.putString("network", impressionData.getNetworkName());
                 }
                 sendEvent(ON_IMPRESSION_TRACKED, event);
             }
