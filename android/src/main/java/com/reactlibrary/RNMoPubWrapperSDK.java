@@ -21,6 +21,9 @@ import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubInterstitial;
 import com.mopub.mobileads.MoPubRewardedVideoListener;
 import com.mopub.mobileads.MoPubRewardedVideos;
+import com.mopub.network.ImpressionListener;
+import com.mopub.network.ImpressionsEmitter;
+import com.mopub.network.ImpressionData;
 
 
 import java.util.Set;
@@ -43,8 +46,12 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
     public static final String ON_INTERSTITIAL_CLICKED = "onInterstitialClicked";
     public static final String ON_INTERSTITIAL_DISAPPEAR = "onInterstitialDisappear";
 
+    public static final String ON_IMPRESSION_TRACKED = "onImpressionTracked";
+
     private final ReactApplicationContext reactContext;
     private MoPubInterstitial mInterstitial;
+    private final MoPubInterstitial.InterstitialAdListener listenerInterstitial = this;
+    private ImpressionListener mImpressionListener;
 
     public RNMoPubWrapperSDK(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -59,15 +66,16 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
     @ReactMethod
     public void initialize(final String interstitialAdUnitId, final String rewardedVideoAdUnitId) {
         final Context context = this.getCurrentActivity();
-        mInterstitial = new MoPubInterstitial(getCurrentActivity(), interstitialAdUnitId);
         final MoPubRewardedVideoListener listenerRewardedVideo = this;
-        final MoPubInterstitial.InterstitialAdListener listenerInterstitial = this;
         Handler mainHandler = new Handler(context.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
                 SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder(interstitialAdUnitId).build();
                 MoPub.initializeSdk(context, sdkConfiguration, initSdkListener(interstitialAdUnitId, rewardedVideoAdUnitId, listenerRewardedVideo, listenerInterstitial));
+
+                mImpressionListener = createImpressionsListener();
+                ImpressionsEmitter.addListener(mImpressionListener);
             }
         };
         mainHandler.post(myRunnable);
@@ -89,9 +97,23 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
                 event.putBoolean("shouldShowConsent", mPersonalInfoManager.shouldShowConsentDialog());
                 event.putString("interstitialAdUnitId", interstitialAdUnitId);
                 event.putString("rewardedVideoAdUnitId", rewardedVideoAdUnitId);
+                event.putString("version", "1.0.2");
                 sendEvent(ON_SDK_INIT_SUCCESS, event);
                 MoPubRewardedVideos.setRewardedVideoListener(listenerRewardedVideo);
-                mInterstitial.setInterstitialAdListener(listenerInterstitial);
+            }
+        };
+    }
+
+    private ImpressionListener createImpressionsListener() {
+        return new ImpressionListener() {
+            @Override
+            public void onImpression(@NonNull final String adUnitId, @Nullable final ImpressionData impressionData) {
+                WritableMap event = Arguments.createMap();
+                event.putString("adUnitID", adUnitId);
+                if( impressionData != null ) {
+                    event.putString("network", impressionData.getNetworkName();
+                }
+                sendEvent(ON_IMPRESSION_TRACKED, event);
             }
         };
     }
@@ -124,9 +146,9 @@ public class RNMoPubWrapperSDK extends ReactContextBaseJavaModule implements MoP
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mInterstitial != null) {
-                    mInterstitial.load();
-                }
+                mInterstitial = new MoPubInterstitial(getCurrentActivity(), interstitialAdUnitId);
+                mInterstitial.setInterstitialAdListener(listenerInterstitial);
+                mInterstitial.load();
             }
         });
     }

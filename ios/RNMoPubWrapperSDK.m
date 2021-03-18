@@ -29,7 +29,9 @@ RCT_EXPORT_MODULE();
         @"onInterstitialLoadFailure",
         @"onInterstitialAppear",
         @"onInterstitialClicked",
-        @"onInterstitialDisappear"
+        @"onInterstitialDisappear",
+        
+        @"onImpressionTracked"
     ];
 }
 
@@ -39,15 +41,13 @@ RCT_EXPORT_METHOD(initialize:(NSString *)interstitialAdUnitId rewardedVideoAdUni
     sdkConfig.globalMediationSettings = @[];
     [[MoPub sharedInstance] initializeSdkWithConfiguration:sdkConfig completion:^{
         [MPRewardedVideo setDelegate:self forAdUnitId:rewardedVideoAdUnitId];
-        self.interstitial = [MPInterstitialAdController interstitialAdControllerForAdUnitId: interstitialAdUnitId];
-        self.interstitial.delegate = self;
         NSDictionary* body = @{
             @"canCollectPersonalInformation":@([MoPub sharedInstance].shouldShowConsentDialog),
             @"shouldShowConsentDialog":@([MoPub sharedInstance].shouldShowConsentDialog),
             @"isGDPRApplicable":@([MoPub sharedInstance].isGDPRApplicable),
             @"interstitialAdUnitId": interstitialAdUnitId,
             @"rewardedVideoAdUnitId": rewardedVideoAdUnitId,
-            @"version": @"1.0.1"
+            @"version": @"1.0.2"
         };
         [self sendEventWithName:@"onSDKInitSuccess" body:body];
     }];
@@ -69,6 +69,8 @@ RCT_EXPORT_METHOD(presentRewardedVideo:(NSString *)adUnitID) {
 }
 
 RCT_EXPORT_METHOD(loadInterstitial:(NSString *)adUnitID) {
+    self.interstitial = [MPInterstitialAdController interstitialAdControllerForAdUnitId: adUnitID];
+    self.interstitial.delegate = self;
     [self.interstitial loadAd];
 }
 
@@ -136,6 +138,25 @@ RCT_EXPORT_METHOD(presentInterstitial:(NSString *)adUnitID) {
 
 - (void)interstitialDidDisappear:(MPInterstitialAdController *)interstitial {
     [self sendEventWithName:@"onInterstitialDisappear" body:nil];
+}
+
+// Impression Tracked Delegate
+-(void)didTrackImpressionWithAdUnitID:(NSString *)adUnitID impressionData:(MPImpressionData *)impressionData {
+    NSMutableDictionary *dict = @{};
+    dict[@"adUnitID"] = adUnitID;
+    if( impressionData.networkName != nil ) {
+        dict[@"network"] = impressionData.networkName;
+    }
+    [self sendEventWithName:@"onImpressionTracked" body:dict];
+}
+
+- (void)mopubAd:(id<MPMoPubAd>)ad didTrackImpressionWithImpressionData:(MPImpressionData *)impressionData {
+    NSMutableDictionary *dict = @{};
+    dict[@"adUnitID"] = impressionData.adUnitID;
+    if( impressionData.networkName != nil ) {
+        dict[@"network"] = impressionData.networkName;
+    }
+    [self sendEventWithName:@"onImpressionTracked" body:dict];
 }
 
 - (dispatch_queue_t)methodQueue {
