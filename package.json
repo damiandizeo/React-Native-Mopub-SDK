@@ -1,12 +1,32 @@
 {
   "_from": "react-native-mopub-sdk",
   "_id": "react-native-mopub-sdk@1.0.2",
+  "_inBundle": false,
+  "_location": "/react-native-mopub-sdk",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "react-native-mopub-sdk",
+    "name": "react-native-mopub-sdk",
+    "escapedName": "react-native-mopub-sdk",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/react-native-mopub-sdk/-/react-native-mopub-sdk-1.0.0.tgz",
+  "_shasum": "35afe03b3c11a4e087a985ef7bc6fa2b0eb256e2",
+  "_spec": "react-native-mopub-sdk",
   "author": {
-    "name": "Damian Di Zeo",
-    "email": "damiandizeo@gmail.com"
+    "name": "Your Name",
+    "email": "yourname@email.com"
   },
   "bugs": {
-    "url": "https://github.com/damiandizeo/React-Native-Mopub-SDK/issues"
+    "url": "https://github.com/aliasad106/React-Native-Mopub-SDK/issues"
   },
   "bundleDependencies": false,
   "deprecated": false,
@@ -17,7 +37,7 @@
     "react-native": "^0.52.0",
     "react-native-windows": "0.52.0"
   },
-  "homepage": "https://github.com/damiandizeo/React-Native-Mopub-SDK#readme",
+  "homepage": "https://github.com/aliasad106/React-Native-Mopub-SDK#readme",
   "keywords": [
     "react-native"
   ],
@@ -32,8 +52,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/damiandizeo/React-Native-Mopub-SDK.git",
-    "baseUrl": "https://github.com/damiandizeo/React-Native-Mopub-SDK"
+    "url": "git+https://github.com/aliasad106/React-Native-Mopub-SDK.git",
+    "baseUrl": "https://github.com/aliasad106/React-Native-Mopub-SDK"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "title": "React Native Mopub Sdk",
   "version": "1.0.2"
