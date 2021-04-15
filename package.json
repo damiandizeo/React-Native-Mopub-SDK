@@ -1,6 +1,6 @@
 {
   "_from": "react-native-mopub-sdk",
-  "_id": "react-native-mopub-sdk@1.0.2",
+  "_id": "react-native-mopub-sdk@1.0.3",
   "_inBundle": false,
   "_location": "/react-native-mopub-sdk",
   "_phantomChildren": {},
@@ -21,6 +21,7 @@
   "_resolved": "https://registry.npmjs.org/react-native-mopub-sdk/-/react-native-mopub-sdk-1.0.0.tgz",
   "_shasum": "35afe03b3c11a4e087a985ef7bc6fa2b0eb256e2",
   "_spec": "react-native-mopub-sdk",
+  "_where": "/Users/damian/Desktop/Proyectos/Trivia /Native Apps/Trivia",
   "author": {
     "name": "Your Name",
     "email": "yourname@email.com"
@@ -59,5 +60,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "title": "React Native Mopub Sdk",
-  "version": "1.0.2"
+  "version": "1.0.3"
 }
