@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
     
     s.subspec "MoPub" do |ss|
         
-        ss.dependency 'mopub-ios-sdk'
+        ss.dependency 'mopub-ios-sdk', '5.15.0'
         
         s.static_framework = true
     end
@@ -31,25 +31,25 @@ Pod::Spec.new do |s|
 
     s.subspec "AdMob" do |ss|
         
-        ss.dependency 'MoPub-AdMob-Adapters'
+        ss.dependency 'MoPub-AdMob-Adapters', '7.68.0.2'
         
     end
 
     s.subspec "FacebookAudienceNetwork" do |ss|
         
-        ss.dependency 'MoPub-FacebookAudienceNetwork-Adapters'
+        ss.dependency 'MoPub-FacebookAudienceNetwork-Adapters', '6.2.0.2'
         
     end
         
     s.subspec "Vungle" do |ss|
         
-        ss.dependency 'MoPub-Vungle-Adapters'
+        ss.dependency 'MoPub-Vungle-Adapters', '6.8.1.3'
         
     end
 
     s.subspec "IronSource" do |ss|
         
-        ss.dependency 'MoPub-IronSource-Adapters'
+        ss.dependency 'MoPub-IronSource-Adapters', '7.0.3.0.3'
         
     end
 
